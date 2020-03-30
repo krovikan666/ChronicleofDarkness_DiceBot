@@ -53,12 +53,29 @@ class Roller():
         elif split_message[1] == 'chance':
             await self.roll_chance(command.channel, command.author)
         elif split_message[1].isdigit():
+            rote = False
+            roll_again = 10
+
+            # get dice
             dice = int(split_message[1])
+
+            # get roll again or rote flag
             try:
                 roll_again = int(split_message[2])
             except IndexError:
-                roll_again = 10
-            await self.roll_dice(command.channel, command.author, dice, roll_again)
+                pass
+            except ValueError:
+                if split_message[2] == 'rote':
+                    rote = True
+
+            # get rote flag
+            try:
+                if split_message[3] == 'rote':
+                    rote = True
+            except IndexError:
+                pass
+
+            await self.roll_dice(command.channel, command.author, dice, roll_again, rote)
         else:
             await EmbedError().send_error(command.channel,
                                           'Incorrect command usage',
@@ -92,7 +109,7 @@ class Roller():
 
         await channel.send(embed=embed)
 
-    async def roll_dice(self, channel, user, roll, explode=10):
+    async def roll_dice(self, channel, user, roll, explode=10, rote=False):
         """Rolls the dice for the user and sends the results to the channel
 
         :param channel: The channel the command was sent to
@@ -101,6 +118,7 @@ class Roller():
         :type user: :class: discord.Member
         :param int roll: The number of dice to roll
         :param int explode: the minimum number that causes a dice to explode, default: 10
+        :param bool rote: If the action is a routine action
 
         """
 
@@ -123,7 +141,10 @@ class Roller():
 
         # Roll requested dice
         for c in range(0, roll, 1):
-            dice.append(self.get_die())
+            die = self.get_die()
+            if die < 8 and rote:
+                die = self.get_die()
+            dice.append(die)
 
         extra_dice = self.explode_dice(dice, explode)
 
@@ -194,9 +215,15 @@ class Roller():
         """Returns the usage embed of the command"""
 
         usage = discord.Embed(title='roll command')
-        usage.add_field(name='usage', value='$roll chance / $roll # #', inline=False)
+        usage.add_field(name='usage', value='$roll chance / $roll # # (rote)', inline=False)
         usage.add_field(name='$roll chance', value='will roll a chance die for you ', inline=False)
         usage.add_field(name='$roll X', value='will roll X dice for you, with 10-again rules', inline=False)
+        usage.add_field(name='$roll X rote',
+                        value='will roll X dice for you, with 10-again rules, rote rules',
+                        inline=False)
         usage.add_field(name='$roll X Y', value='will roll X dice for you, with Y-again rules', inline=False)
+        usage.add_field(name='$roll X Y rote',
+                        value='will roll X dice for you, with Y-again rules, rote rules',
+                        inline=False)
 
         return usage
