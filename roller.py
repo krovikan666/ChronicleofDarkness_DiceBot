@@ -100,7 +100,7 @@ class Roller():
         die = self.get_die()
         extra_dice = self.explode_dice([die])
 
-        embed = self.build_embed([die], extra_dice)
+        embed = self.build_embed([die], extra_dice, 10)
         embed.title= title
         embed.colour = colour
 
@@ -148,17 +148,18 @@ class Roller():
 
         extra_dice = self.explode_dice(dice, explode)
 
-        embed = self.build_embed(dice, extra_dice)
+        embed = self.build_embed(dice, extra_dice, 8)
         embed.title= title
         embed.colour = colour
 
         await channel.send(embed=embed)
 
-    def build_embed(self, dice, extra_dice):
+    def build_embed(self, dice, extra_dice, success_value=8):
         """Builds and returns the embed for the dice result
 
         :param List dice: The list of dice that were rolled
         :param List extra_dice: The list of extra dice that were rolled
+        :param int success_value: The min value for a success
 
         """
 
@@ -167,12 +168,12 @@ class Roller():
         success = 0
 
         for die in dice:
-            if die > 7:
+            if die >= success_value:
                 success += 1
             message += '{} '.format(self.emojis[die])
 
         for die in extra_dice:
-            if die > 7:
+            if die >= success_value:
                 success += 1
             extra_message += '{} '.format(self.emojis[die])
 
