@@ -1,5 +1,6 @@
 from discord import Embed
 from error import EmbedError
+from roller.initiative import Initiative
 from roller.roller import Roller
 
 
@@ -23,7 +24,9 @@ class HelpHandler():
         if command.content == '$help':
             await self.default_help(command.channel)
         elif 'roll' in command.content:
-            await self.roll_help(command.channel)
+            await self.command_help(command.channel, Roller)
+        elif 'init' in command.content:
+            await self.command_help(command.channel, Initiative)
         else:
             await EmbedError().send_error(command.channel,
                                           'Invalid help command',
@@ -45,14 +48,15 @@ class HelpHandler():
         embed.add_field(name='$roll', value='I will roll some dice for you', inline=False)
         await channel.send(embed=embed)
 
-    async def roll_help(self, channel):
+    async def command_help(self, channel, handler):
         """Sends the roll help message to the channel
 
         :param channel: The channel the command was sent to
         :type channel: :class: discord.GroupChannel
+        :parm Object handler: an object with the get_usage method defined, that returns an Embed
 
         """
 
-        embed = Roller.get_usage()
+        embed = handler.get_usage()
         embed.color = self.colour
         await channel.send(embed=embed)
