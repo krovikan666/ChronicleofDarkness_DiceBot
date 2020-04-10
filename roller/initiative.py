@@ -102,7 +102,7 @@ class Initiative(Base):
         """Returns the usage embed of the command"""
 
         usage = discord.Embed(title='Initiative command')
-        usage.add_field(name='usage', value='$init', inline=False)
+        usage.add_field(name='usage', value='$init #', inline=False)
         usage.add_field(name='$init modifier', value='will roll your initiative and add your modifier ', inline=False)
 
         return usage
