@@ -1,6 +1,9 @@
 import discord
+
 from auth import token
 from help import HelpHandler
+
+from roller.initiative import Initiative
 from roller.roller import Roller
 
 client = discord.Client()
@@ -21,7 +24,7 @@ async def on_message(command):
 
     1. Is this message for this bot?
     2. Which handler is responsible for this command?
-    2a. Send Initiate the handler
+    2a. Send command to the handler
     3. Ignore the message if we don't recognize it
 
     """
@@ -32,5 +35,7 @@ async def on_message(command):
         await HelpHandler().handler(command)
     elif command.content.startswith('$roll'):
         await Roller(command.guild).handler(command)
+    elif command.content.startswith('$init'):
+        await Initiative(command.guild).handler(command)
 
 client.run(token)
