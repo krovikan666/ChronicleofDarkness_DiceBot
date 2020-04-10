@@ -23,7 +23,7 @@ class Initiative(Base):
         7: ':seven:',
         8: ':eight:',
         9: ':nine:',
-        10: ':zero:'
+        0: ':zero:'
     }
 
     def __init__(self, guild):
@@ -89,7 +89,7 @@ class Initiative(Base):
 
 
         for digit in list(str(initiative)):
-            result_message += '{} '.format(self.result_emojis[digit])
+            result_message += '{} '.format(self.result_emojis[int(digit)])
 
         embed = discord.Embed()
         embed.add_field(name='Roll', value=roll_message)
