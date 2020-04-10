@@ -1,8 +1,7 @@
 import discord
 from auth import token
-from error import EmbedError
 from help import HelpHandler
-from roller import Roller
+from roller.roller import Roller
 
 client = discord.Client()
 

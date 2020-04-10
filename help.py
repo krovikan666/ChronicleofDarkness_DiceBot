@@ -1,6 +1,6 @@
 from discord import Embed
 from error import EmbedError
-from roller import Roller
+from roller_old import Roller
 
 
 class HelpHandler():
